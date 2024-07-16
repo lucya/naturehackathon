@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>요리 레시피 생성기</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1 {
+        color: #333;
+      }
+      #ingredients {
+        width: 100%;
+        height: 100px;
+      }
+      #generate {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      #recipe {
+        white-space: pre-wrap;
+      }
+      .logo-container {
+        width: 100%;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        padding: 10px 0;
+      }
+      .content {
+        margin-top: 170px; /* SVG 높이 + 여분 */
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo-container">
+      <svg width="214" height="150" xmlns="http://www.w3.org/2000/svg">
+        <!-- 냉장고 배경 -->
+        <rect
+          x="21"
+          y="10"
+          width="172"
+          height="130"
+          rx="10"
+          ry="10"
+          fill="#f0f0f0"
+          stroke="#333"
+          stroke-width="3" />
+
+        <!-- 냉장고 손잡이 -->
+        <rect
+          x="180"
+          y="20"
+          width="10"
+          height="110"
+          rx="5"
+          ry="5"
+          fill="#999" />
+
+        <!-- 냉장고 분리선 -->
+        <line x1="21" y1="75" x2="193" y2="75" stroke="#333" stroke-width="3" />
+
+        <!-- 텍스트 -->
+        <text
+          x="107"
+          y="40"
+          font-family="Arial, sans-serif"
+          font-size="18"
+          font-weight="bold"
+          text-anchor="middle"
+          fill="#333">
+          냉장고
+        </text>
+        <text
+          x="107"
+          y="70"
+          font-family="Arial, sans-serif"
+          font-size="25"
+          font-weight="bold"
+          text-anchor="middle"
+          fill="#ff6b6b">
+          끼깔나게
+        </text>
+        <text
+          x="107"
+          y="110"
+          font-family="Arial, sans-serif"
+          font-size="24"
+          font-weight="bold"
+          text-anchor="middle"
+          fill="#333">
+          파먹기!
+        </text>
+      </svg>
+    </div>
+
+    <div class="content">
+      <h2>가지고 있는 재료를 쉼표로 구분하여 입력하세요:</h2>
+      <div style="margin: 10px 10px 10px 0">
+        요리 스타일
+        <select id="cookStyle" style="margin-left: 10px">
+          <option value="한국">한국</option>
+          <option value="일본">일본</option>
+          <option value="멕시코">멕시코</option>
+          <option value="미국">미국</option>
+          <option value="인도">인도</option>
+        </select>
+      </div>
+      <textarea id="ingredients" placeholder="예: 가지, 오이, 파"></textarea>
+      <br /><br />
+      <button id="generate">레시피 생성</button>
+      <br /><br />
+      <div id="recipe"></div>
+    </div>
+    <script>
+      document
+        .getElementById("generate")
+        .addEventListener("click", async () => {
+          const ingredients = document.getElementById("ingredients").value;
+          const recipeDiv = document.getElementById("recipe");
+          const cookStyle = document.getElementById("cookStyle").value;
+
+          recipeDiv.textContent = `${cookStyle} 스타일 레시피를 생성 중입니다...`;
+
+          try {
+            const response = await fetch("/generate-recipe", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                ingredients: ingredients.split(",").map((i) => i.trim()),
+                cookStyle: cookStyle,
+              }),
+            });
+
+            const data = await response.json();
+            if (data.recipe) {
+              recipeDiv.textContent = data.recipe;
+            } else {
+              recipeDiv.textContent = "레시피 생성에 실패했습니다.";
+            }
+          } catch (error) {
+            recipeDiv.textContent = "오류가 발생했습니다: " + error.message;
+          }
+        });
+    </script>
+  </body>
+</html>
