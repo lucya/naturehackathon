@@ -71,7 +71,7 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-// const port = 3000;
-// server.listen(port, () => {
-//   console.log(`Server running at http://localhost:${port}`);
-// });
+const port = 3000;
+server.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
