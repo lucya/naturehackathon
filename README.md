@@ -1,4 +1,4 @@
 # naturehackathon
 
-# run server
+## run server
 node server.js
