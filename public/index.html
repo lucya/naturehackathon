@@ -137,16 +137,19 @@
           recipeDiv.textContent = `${cookStyle} 스타일 레시피를 생성 중입니다...`;
 
           try {
-            const response = await fetch("/generate-recipe", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                ingredients: ingredients.split(",").map((i) => i.trim()),
-                cookStyle: cookStyle,
-              }),
-            });
+            const response = await fetch(
+              "/.netlify/functions/generate-recipe",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  ingredients: ingredients.split(",").map((i) => i.trim()),
+                  cookStyle: cookStyle,
+                }),
+              }
+            );
 
             const data = await response.json();
             if (data.recipe) {
